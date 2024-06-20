@@ -1,33 +1,35 @@
 """
 Test custom Django management commands.
 """
-from unittest.mock import patch
 
-from pymysql import OperationalError as MysqlError
+from unittest.mock import patch
 
 from django.core.management import call_command
 from django.db.utils import OperationalError
 from django.test import SimpleTestCase
+from pymysql import OperationalError as MysqlError
 
-@patch('core.management.commands.wait_for_db.Command.check')
+
+@patch("core.management.commands.wait_for_db.Command.check")
 class CommandTest(SimpleTestCase):
-  """Test Command."""
+    """Test Command."""
 
-  def test_wait_for_db_ready(self, patched_check):
-    """Test waiting for database if database ready."""
-    patched_check.return_value = True
+    def test_wait_for_db_ready(self, patched_check):
+        """Test waiting for database if database ready."""
+        patched_check.return_value = True
 
-    call_command('wait_for_db')
+        call_command("wait_for_db")
 
-    patched_check.assert_called_once_with(databases=['default'])
+        patched_check.assert_called_once_with(databases=["default"])
 
-  @patch('time.sleep')
-  def test_wait_for_delay(self, patched_sleep, patched_check):
-    """Test waiting for database when getting Operational Error."""
-    patched_check.side_effect = [MysqlError] * 2 + \
-      [OperationalError] * 3 + [True]
-    
-    call_command('wait_for_db')
+    @patch("time.sleep")
+    def test_wait_for_delay(self, patched_sleep, patched_check):
+        """Test waiting for database when getting Operational Error."""
+        patched_check.side_effect = (
+            [MysqlError] * 2 + [OperationalError] * 3 + [True]
+        )  #
 
-    self.assertEqual(patched_check.call_count, 6)
-    patched_check.assert_called_with(databases=['default'])
+        call_command("wait_for_db")
+
+        self.assertEqual(patched_check.call_count, 6)
+        patched_check.assert_called_with(databases=["default"])
