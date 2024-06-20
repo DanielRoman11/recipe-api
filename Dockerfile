@@ -3,6 +3,10 @@ LABEL mantainer="danielroman.pages.dev"
 
 ENV PYTHONUNBUFFERED 1
 
+RUN apk update && apk add --no-cache \
+    g++ \
+    && rm -rf /var/cache/apk/*
+
 COPY ./requirements.txt /tmp/requirements.txt
 COPY ./requirements.dev.txt /tmp/requirements.dev.txt
 COPY ./app /app
