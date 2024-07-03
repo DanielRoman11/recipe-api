@@ -5,6 +5,9 @@ ENV PYTHONUNBUFFERED 1
 
 RUN apk update && apk add --no-cache \
     g++ \
+		libffi-dev \
+    gcc \
+    musl-dev \
     && rm -rf /var/cache/apk/*
 
 COPY ./requirements.txt /tmp/requirements.txt
